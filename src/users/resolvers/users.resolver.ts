@@ -4,11 +4,13 @@ import { UsersService } from '../services/users.service';
 import { NotFoundException } from '@nestjs/common';
 import { CreateUserInput } from '../dto/create-user.input';
 import { UpdateUserInput } from '../dto/update-user.input';
+import { Transactional } from 'typeorm-transactional-cls-hooked';
 
 @Resolver(() => UserType)
 export class UsersResolver {
   constructor(private readonly usersService: UsersService) {}
 
+  @Transactional()
   @Query(() => UserType, { name: 'user' })
   async getUser(@Args({ name: 'id', type: () => Int }) id: number) {
     const res = await this.usersService.get(id);
@@ -16,6 +18,7 @@ export class UsersResolver {
     return res;
   }
 
+  @Transactional()
   @Mutation(() => UserType, { name: 'createUser' })
   async createUser(
     @Args('input')
@@ -24,6 +27,7 @@ export class UsersResolver {
     return this.usersService.create(input);
   }
 
+  @Transactional()
   @Mutation(() => UserType, { name: 'updateUser' })
   async updateUser(
     @Args('input')

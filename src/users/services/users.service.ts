@@ -4,6 +4,7 @@ import { UserEntity } from '../models/user.entity';
 import { Repository, DeepPartial } from 'typeorm';
 import { Transactional } from 'typeorm-transactional-cls-hooked';
 import sleep from '../../utils/sleep';
+import { ProductEntity } from '../models/product.entity';
 
 @Injectable()
 export class UsersService {
@@ -20,6 +21,7 @@ export class UsersService {
     return this.userRepo.findOne(id);
   }
 
+  @Transactional()
   async create(input: DeepPartial<UserEntity>) {
     const res = await this.userRepo.save(this.userRepo.create(input));
     return res;
@@ -41,6 +43,9 @@ export class UsersService {
       ...input,
       updateCount: user.updateCount + 1,
     });
+
+    //let product = ProductEntity.
+
 
     if (withDelay) await sleep(2000);
     if (withFail) throw new InternalServerErrorException();
